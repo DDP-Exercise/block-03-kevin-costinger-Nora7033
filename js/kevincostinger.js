@@ -39,15 +39,67 @@
  *     the scope of his variables and of course, makes use of
  *     event delegation, to keep his event listeners tidied up!
  *
- *     You - 2026-03-25
+ *     Nora - 2026-03-25
  *******************************************************/
 let sumExpenses = 0; //Use this variable to keep the sum up to date.
 
-function submitForm(e){
+function submitForm(e) {
+    e.preventDefault();
     //TODO: Prevent the default behavior of the submit button.
     //TODO: Validate the form. If everything is fine, add the expense to the tracker and reset the form.
-}
 
+    let date = document.getElementById("date").value;
+    let amount = document.getElementById("amount").value;
+    let expense = document.getElementById("expense").value;
+
+
+    if (isEmpty(date)) {
+        alert("Please enter date!");
+        return;
+    }
+    if (Number(amount) < 0.01) {
+        alert("Please enter an amount bigger than 0.01!");
+        return;
+    }
+    if (isEmpty(expense)) {
+        alert("Please enter your expense!");
+        return;
+    }
+
+    let table = document.getElementById("expenses").getElementsByTagName("tbody")[0];
+    let newRow = document.createElement("tr");
+
+    let dateCell = document.createElement("td");
+    dateCell.textContent = date;
+
+    let amountCell = document.createElement("td");
+    amountCell.textContent = formatEuro(Number(amount));
+
+    let expenseCell = document.createElement("td");
+    expenseCell.textContent = expense;
+
+    let deleteCell = document.createElement("td");
+    let deleteButton = document.createElement("button");
+    deleteButton.textContent = "X";
+    deleteButton.addEventListener("click", function () {
+        newRow.remove();
+        sumExpenses -= Number(amount);
+        document.getElementById("expenseSum").textContent = formatEuro(sumExpenses);
+    });
+
+    deleteCell.appendChild(deleteButton);
+    newRow.appendChild(dateCell);
+    newRow.appendChild(amountCell);
+    newRow.appendChild(expenseCell);
+    newRow.appendChild(deleteCell);
+    table.appendChild(newRow);
+
+    sumExpenses += Number(amount);
+
+    document.getElementById("expenseSum").textContent = formatEuro(sumExpenses);
+    document.querySelector("form").reset();
+}
+document.querySelector("form").addEventListener("submit", submitForm);
 
 /*****************************
  * DO NOT CHANGE CODE BELOW.
